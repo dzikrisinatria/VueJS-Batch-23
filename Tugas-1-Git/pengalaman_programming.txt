@@ -1,0 +1,1 @@
+Selama ini dalam bidang programming saya telah belajar bahasa PHP, HTML, CSS, dan yang baru-baru ini saya pelajari adalah Python. Sampai saat ini saya telah membuat beberapa website dengan framework Codeigniter untuk menunjang tugas kuliah saya.
