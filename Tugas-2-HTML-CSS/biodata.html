@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Biodata</title>
+    <style type="text/css">
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2d3436;
+            background-color: #f8f9fa;
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1{
+            margin-top: 7%;
+            margin-bottom: 7%;
+        }
+        .card{
+            background-color: #ffff;
+            width: 50%;
+            display: flex;
+            border-radius: 20px;
+            box-shadow:
+                0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+                0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+                0 12.5px 10px rgba(0, 0, 0, 0.06),
+                0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+                0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+                0 100px 80px rgba(0, 0, 0, 0.12);
+        }
+        .row{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin-bottom: 4%;
+        }
+        .col{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding-left: 4%;
+        }
+        .col1{
+            display: flex;
+            width: 30%;
+        }
+        .col2{
+            display: flex;
+            width: 70%;
+        }
+        .bold{
+            font-weight: bold;
+        }
+        .foto{
+            display: flex;
+            width: 40%;
+            /* border-radius: 20px; */
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+        }
+        button{
+            border-radius: 12px;
+            border-width: 2px;
+            border-style: solid;
+            width: 8em;
+            background-color: #ffff;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 15px;
+            transition-duration: 0.4s;
+        }
+        .btn-ig:hover {
+            background-color: #ef476f;
+            color: white;
+        }
+        .btn-tele:hover {
+            background-color: #4895ef;
+            color: white;
+        }
+        .btn-ig{
+            border-color: #ef476f;
+            color: #ef476f;
+            margin-bottom: 10%;
+        }
+        .btn-tele{
+            border-color: #4895ef;
+            color: #4895ef;
+            margin-bottom: 5%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <img class="foto" src="profile.jpg" alt="">
+        <div class="col">
+            <h1>Biodata</h1>
+            <div class="row">
+                <div class="col1 bold">Nama</div>
+                <div class="col2">Dzikri Al-Kautsar Sinatria A</div>
+            </div>
+            <div class="row">
+                <div class="col1 bold">TTL</div>
+                <div class="col2">Bogor, 9 Juli 2000</div>
+            </div>
+            <div class="row">
+                <div class="col1 bold">Alamat</div>
+                <div class="col2">Jl.Permai Raya 9 Blok AX8 No 3, Pamulang, Tangerang Selatan</div>
+            </div>
+            <div class="row">
+                <div class="col1 bold">No HP</div>
+                <div class="col2">085945053805</div>
+            </div>
+            <div class="row">
+                <div class="col1 bold">Email</div>
+                <div class="col2">dzikrisinatria@gmail.com</div>
+            </div>
+            <div class="row">
+                <div class="col1 bold">Media Sosial</div>
+                <div class="row">
+                    <div class="col2">
+                        <a href="http://instagram.com/dzikri.sinatria">
+                            <button class="btn-ig">Instagram</button>
+                        </a>
+                    </div>
+                    <div class="col2">
+                        <a href="http://t.me/dzikrisinatria">
+                            <button class="btn-tele">Telegram</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
