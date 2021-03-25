@@ -52,9 +52,20 @@ for (var i = 1; i <= n; i++) {
 console.log(hasil);
 
 // Soal 4
-var daftarBuah = ["2. Apel", "5. Jeruk", "3. Anggur", "4. Semangka", "1. Mangga"];
-var sorted = daftarBuah.sort()
+var m = 7;
 
-for (var i = 0; i < 5; i++) {
-    console.log(sorted[i])
+for (var i = 1; i <= m; i++) {
+    if (i % 3 == 1) {
+        console.log(i, "- I love programming");
+    } else if (i % 3 == 2) {
+        console.log(i, "- I love Javascript");
+    }
+    if (i % 3 == 0) {
+        console.log(i, "- I love VueJS");
+        var samadengan = '';
+        for (var j = 1; j <= i; j++){
+            samadengan += '=';
+        }
+        console.log(samadengan);
+    }
 }
