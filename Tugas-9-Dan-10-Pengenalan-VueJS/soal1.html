@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <form>
+            <input type="text" name="keyword" v-model="keyword" v-on="" placeholder="Ketikkan kata kunci">
+            <ul>
+                <li v-for="item in search">{{ item }}</li>
+            </ul>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                keyword: "",
+                books: [
+                    'Kalkulus Dasar', 'Fisika Dasar', 'Aljabar Linier Elementer',
+                    'Aljabar Abstrak', 'Algoritma Pemrograman'
+                ],
+            },
+            computed: {
+                search: function(){
+                    var self = this;
+                    return this.books.filter(
+                        function(book){
+                            return book.toLowerCase().indexOf(self.keyword.toLowerCase()) >= 0;
+                        }
+                    );
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
