@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" name="newName" v-model="newName">
+        <button v-if="btnStatus === 'Add'" @click.prevent="addUser">{{ btnStatus }}</button>
+        <button v-if="btnStatus === 'Update'" @click.prevent="updateUser">{{ btnStatus }}</button>
+        <ul v-for="user in users">
+            <li v-if="user.index != null">
+                {{ user.name }}
+                <button @click="editUser(user.index)" name="edit">Edit</button> || 
+                <button @click="deleteUser(user.index)" name="delete">Delete</button>
+            </li>
+        </ul>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                newName: "",
+                btnStatus : "Add",
+                index: 0,
+                users: [
+                    { index: 0, name : 'Muhammad Iqbal Mubarok' },
+                    { index: 1, name : 'Ruby Purwanti' },
+                    { index: 2, name : 'Faqih Muhammad' },
+                ],
+            },
+            methods: {
+                addUser: function(){
+                    this.users.push({
+                        index : this.users.length,
+                        name : this.newName,
+                    })
+                    this.newName = ""
+                },
+                editUser: function(index){
+                    this.index = index
+                    this.newName = this.users[index].name
+                    this.btnStatus = "Update"
+                },
+                updateUser: function(){
+                    this.users[this.index].name = this.newName
+                    this.btnStatus = "Add"
+                    this.newName = ""
+                },
+                deleteUser: function(index){
+                    if (window.confirm("Anda yakin?")){
+                        this.users[index].index = null
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
