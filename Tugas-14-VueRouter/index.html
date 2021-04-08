@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <h1>Belajar Vue Router</h1>
+    
+        <!-- Pengganti tag <a href=""></a>  -->
+        <div id="app">
+            <router-link to="/">Home</router-link>
+            <router-link to="/about">About</router-link>
+            <router-link to="/categories">Categories</router-link>
+            <hr>
+            <!-- Untuk Menampilkan component secara dinamis , sesuai dengan route yang diakses -->
+            <router-view></router-view>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script type="module">
+        import { CategoriesComponent } from './CategoriesComponent.js'
+        import { CategoryComponent } from './CategoryComponent.js'
+
+        // Kita membuat 2 component , yaitu Home dan About
+        const Home = {
+            template: `
+                <div>
+                    Ini Halaman Home. Bisa diakses oleh siapa saja<br>
+                    Halaman About bisa diakses oleh yang sudah login dan admin<br>
+                    Halaman Categories bisa diakses oleh yang sudah login<br>
+                    Halaman Category bisa diakses oleh yang sudah login dan admin<br>
+                </div>
+            `
+        }
+        const About = {
+            template: '<div>Ini Halaman About. Bisa diakses oleh yang sudah login dan admin</div>'
+        }
+
+        // Kemudian kita arahkan setiap route ke component yang kita inginkan
+        const routes = [
+            { path: '/', component: Home, alias: '/home' },
+            { path: '/about', component: About, 
+                meta: {
+                    login : true,
+                    role : 'admin'
+                }
+            },
+            { path: '/categories', 
+                component: CategoriesComponent,
+                meta: {
+                    login : true
+                }
+            },
+            { path: '/category/:id',
+                component: CategoryComponent,
+                meta: {
+                    login : true,
+                    role : 'admin'
+                }
+            },
+            { path: '*', redirect: '/' }
+        ]
+
+        //Kemudian kita instansiasi object Vue Router dan tambahkan routes yang sudah kita buat tadi
+        const router = new VueRouter({
+            routes
+        })
+
+        router.beforeEach((to, from, next) => {
+            if (to.matched.some( record => record.meta.login )){
+                let auth = true;
+                if (!auth){
+                    alert('Halaman ini hanya untuk user yang sudah login.')
+                    next(false)
+                } else{
+                    next()
+                }
+            }else{
+                next()
+            }
+        })
+        router.beforeEach((to, from, next) => {
+            if (to.matched.some( record => record.meta.role )){
+                let authRole = 'admin';
+                if (authRole != 'admin'){
+                    alert('Halaman ini hanya untuk admin.')
+                    next(false)
+                } else{
+                    next()
+                }
+            }else{
+                next()
+            }
+        })
+
+        //Kemudian kita tambahkan object VueRouter yang kita namakan router ke object Vue
+        var vm = new Vue({
+            el: '#app',
+            router,
+        })
+    </script>
+
+</body>
+
+</html>
