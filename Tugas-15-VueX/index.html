@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <form-component
+            
+        ></form-component>
+        <br><br>
+
+        <table border="1">
+            <member-component
+                v-for="member in $store.state.members"
+                :key = "member.name"
+                :member = "member">
+            </member-component>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <script>
+
+        var MemberComponent = {
+            template : `
+                <tr>
+                    <td>
+                        <img width="100" :src="member.photo_profile ? photoDomain + member.photo_profile : 'https://dummyimage.com/16:9x1080'" alt="">
+                    </td>
+                    <td>
+                        <b>Name : </b> {{ member.name }} <br>
+                        <b>Address : </b> {{ member.address }} <br>
+                        <b>Nomor HP : </b> {{ member.no_hp }} <br>
+                    </td>
+                    <td>
+                        <button @click="editMember(member)">Edit</button>
+                        <button @click="removemember(member.id)">Hapus</button>
+                        <button @click="uploadphoto(member)">Upload Foto</button>
+                    </td>
+                </tr>
+            `,
+            data(){
+                return {
+                    photoDomain : 'http://demo-api-vue.sanbercloud.com/'
+                }
+            },
+            props : ['member'],
+            methods: {
+                getMembers: function () {
+                    this.$store.commit('getMembers')
+                },
+                removeMember: function(id){
+                    this.$store.commit('removeMember', id)
+                },
+                editMember: function(member){
+                    this.$store.commit('editMember', member)
+                },
+                uploadPhoto: function(member){
+                    this.$store.commit('uploadPhoto', member)
+                },
+                submitPhoto: function(id){
+                    this.$store.commit('submitPhoto', id)
+                }
+            },
+        }
+
+        var FormComponent = {
+            template : `
+            <form @submit.prevent="submitForm()">
+                <div v-if="$store.state.errors.length">
+                    <p>Please correct the following errors:</p>
+                    <ul>
+                        <li v-for="error in $store.state.errors">{{ $store.state.error }}</li>
+                    </ul>
+                </div>
+
+                <label for="name">Name</label><br>
+                <input type="text" name="name" v-model="$store.state.name" ref="name" :disabled="$store.state.buttonStatus == 'Upload'"><br>
+                
+                <label for="address">Address</label><br>
+                <textarea name="address" v-model="$store.state.address" ref="address" :disabled="$store.state.buttonStatus == 'Upload'"></textarea><br>
+                
+                <label for="no_hp">Nomor HP</label><br>
+                <input type="text" name="no_hp" v-model="$store.state.no_hp" ref="no_hp" :disabled="$store.state.buttonStatus == 'Upload'"><br>
+
+                <div v-if="$store.state.buttonStatus === 'Submit'">
+                    <button type="submit" name="submit" style="margin-top: 10px;" >Submit</button>
+                </div>
+
+                <div v-else-if="$store.state.buttonStatus === 'Update'">
+                    <input type="button" @click="updateMember($store.state.idEditMember)" value="Update" style="margin-top: 10px;"></input>
+                    <input type="button" @click="clearForm()" value="Cancel" style="margin-top: 10px;"></input>
+                </div>
+
+                <div v-else-if="$store.state.buttonStatus === 'Upload'">
+                    <label for="photo">Photo Profile</label><br>
+                    <input type="file" name="photo" ref="photo"></input><br>
+                    <input type="button" @click="submitPhoto($store.state.idUploadMember)" value="Upload" style="margin-top: 20px;">
+                    <input type="button" @click="clearForm()" value="Cancel" style="margin-top: 5px;"></input>
+                </div>
+            </form>
+            `,
+            data(){
+                return {
+                    // photoDomain : 'http://demo-api-vue.sanbercloud.com/'
+                }
+            },
+            methods: {
+                validationForm: function(){
+                    this.$store.commit('validationForm')
+                },
+                clearForm: function(){
+                    this.$store.commit('clearForm')
+                },
+                submitForm: function () {
+                    this.$store.commit('submitForm')
+                },
+                updateMember: function(id){
+                    this.$store.commit('updateMember', id)
+                },
+            },
+            // props : ['member']
+        }
+        
+        const store = new Vuex.Store({
+            state: {
+                name : '',
+                address : '',
+                no_hp : '',
+                errors : [],
+                members : [],
+                buttonStatus : 'Submit',
+                idEditMember : null,
+                idUploadMember : null,
+            },
+            mutations: {
+                validationForm: function(state){
+                    state.errors = []
+
+                    if (state.name.length < 5) {
+                        state.errors.push('Nama minimal 5 karakter')
+                        state.$refs.name.focus()
+                    }
+
+                    if (state.address.length > 30) {
+                        state.errors.push('Address tidak boleh lebih dari 30 karakter')
+                        state.$refs.address.focus()
+                    }
+
+                    if (state.no_hp.length > 12) {
+                        state.errors.push('Nomor HP tidak boleh lebih dari 12 karakter')
+                        state.$refs.no_hp.focus()
+                    }
+                },
+                clearForm: function(state){
+                    state.name = ''
+                    state.address = ''
+                    state.no_hp = ''
+                    state.buttonStatus = 'Submit'
+                    state.idEditMember = null
+                    state.idUploadMember = null
+                },
+                submitForm: function(state) {
+                    validationForm()
+
+                    if (state.errors.length === 0) {
+                        
+                        let formData = new FormData()
+                        formData.append('name', state.name)
+                        formData.append('address', state.address)
+                        formData.append('no_hp', state.no_hp)
+
+                        const config = {
+                            method : "post",
+                            url : "http://demo-api-vue.sanbercloud.com/api/member",
+                            data : formData
+                        }
+
+                        axios(config)
+                            .then( (response) => {
+                                state.clearForm()
+                                state.getMembers()
+                                alert(response.data.message)
+                            })
+                            .catch( (error) => {
+                                console.log(error)
+                            })
+                    }
+                },
+                getMembers: function(state) {
+                    const config = {
+                        method : "get",
+                        url : "http://demo-api-vue.sanbercloud.com/api/member"
+                    }
+
+                    axios(config)
+                        .then( (response) => {
+                            state.members = response.data.members
+                        })
+                        .catch( (error) => {
+                            console.log(error)
+                        })
+                },
+                removeMember: function(state,id){
+
+                    const config = {
+                        method : "post",
+                        url : `http://demo-api-vue.sanbercloud.com/api/member/${id}`,
+                        params : { _method : "DELETE" }
+                    }
+
+                    axios(config)
+                        .then( (response) => {
+                            state.getMembers()
+                            alert(response.data.message)
+                        })
+                        .catch( (error) => {
+                            console.log(error)
+                        })
+                },
+                editMember: function(state,member){
+                    state.name = member.name
+                    state.address = member.address
+                    state.no_hp = member.no_hp
+                    state.buttonStatus = 'Update'
+                    state.idEditMember = member.id
+                },
+                updateMember: function(state,id){
+                    validationForm()
+
+                    if(state.errors.length === 0){
+                        let formData = new FormData()
+                        formData.append('name', state.name)
+                        formData.append('address', state.address)
+                        formData.append('no_hp', state.no_hp)
+
+                        const config = {
+                            method : "post",
+                            url : `http://demo-api-vue.sanbercloud.com/api/member/${id}`,
+                            params : { _method : "PUT" },
+                            data : formData
+                        }
+
+                        axios(config)
+                            .then( (response) => {
+                                state.clearForm()
+                                state.getMembers()
+                                alert(response.data.message)
+                            })
+                            .catch( (error) => {
+                                console.log(error)
+                            })
+                    }
+                },
+                uploadPhoto: function(state,member){
+                    state.name = member.name
+                    state.address = member.address
+                    state.no_hp = member.no_hp
+                    state.buttonStatus = 'Upload'
+                    state.idUploadMember = member.id
+                },
+                submitPhoto: function(state,id){
+                    let file = state.$refs.photo.files[0]
+                    let formData = new FormData()
+                    formData.append('photo_profile', file)
+                    
+                    const config = {
+                        method : "post",
+                        url : `http://demo-api-vue.sanbercloud.com/api/member/${id}/upload-photo-profile`,
+                        data : formData
+                    }
+
+                    axios(config)
+                        .then( (response) => {
+                            state.clearForm()
+                            state.getMembers()
+                            alert(response.data.message)
+                        })
+                        .catch( (error) => {
+                            console.log(error)
+                        })
+                }
+            },
+            getters: {
+
+            },
+        })
+
+        var vm = new Vue({
+            el: '#app',
+            store,
+            components: {
+                'member-component' : MemberComponent,
+                'form-component' : FormComponent,
+            },
+            methods: {
+                
+            },
+            created(){
+                this.$store.commit('getMembers')
+            }
+        })
+    </script>
+</body>
+
+</html>
